@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Simple CRM</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .color-picker { margin-bottom: 1rem; }
+    #signature { border: 1px solid #ccc; width: 300px; height: 150px; }
+  </style>
+</head>
+<body>
+  <h1>Simple CRM</h1>
+  <div class="color-picker">
+    <label>Theme color: <input type="color" id="themeColor" value="#3366ff"></label>
+  </div>
+  <form id="dataForm">
+    <input type="text" id="name" placeholder="Name" required />
+    <button type="submit">Save Data</button>
+  </form>
+  <h2>Upload Document</h2>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" id="document" name="document" required />
+    <button type="submit">Upload</button>
+  </form>
+  <h2>Signature (placeholder)</h2>
+  <canvas id="signature"></canvas>
+
+  <script>
+    const dataForm = document.getElementById('dataForm');
+    const uploadForm = document.getElementById('uploadForm');
+    const themeColor = document.getElementById('themeColor');
+
+    themeColor.addEventListener('input', e => {
+      document.body.style.backgroundColor = e.target.value;
+    });
+
+    dataForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      await fetch('http://localhost:3001/api/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      });
+      alert('Saved');
+    });
+
+    uploadForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const formData = new FormData(uploadForm);
+      await fetch('http://localhost:3001/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      alert('Uploaded');
+    });
+  </script>
+</body>
+</html>
